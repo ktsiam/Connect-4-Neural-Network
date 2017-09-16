@@ -1,1 +1,1 @@
-# Connect-4-Neural-Network
+# Connect-4-Neural-Network (under construction)
