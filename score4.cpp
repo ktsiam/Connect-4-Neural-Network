@@ -60,22 +60,33 @@ bool Score4::wins(){
         }
 
         for ( int c = 0; c < COL_NB; ++c) {
-                for ( int r = 0; r < 5; ++c) {
-                        if ( board[r][c] && board[r][c] == board[r][c+1]
-                                 && board[r][c] == board[r][c+2] 
-                             && board[r][c] == board[r][c+3])
+                for ( int r = 0; r < 4; ++r) {
+                        if ( board[r][c] && board[r][c] == board[r+1][c]
+                                 && board[r][c] == board[r+2][c] 
+                             && board[r][c] == board[r+3][c])
                                 return 1;
                 }
         }
 
 
-        for ( int r = 0; r < ROW_NB; ++r) {
-                for ( int c = 0; c < 5; ++c) {
-                        if ( board[r][c] && board[r][c] == board[r][c+1]
-                                 && board[r][c] == board[r][c+2] 
-                             && board[r][c] == board[r][c+3])
+        for ( int r = 0; r < ROW_NB-3; ++r ) {
+                for ( int c = 0; c < COL_NB-3; ++c) {
+                        if ( board[r][c] && board[r][c] == board[r+1][c+1]
+                                 && board[r][c] == board[r+2][c+2] 
+                             && board[r][c] == board[r+3][c+3])
                                 return 1;
                 }
         }
+
+        for ( int r = 3; r < ROW_NB; ++r ) {
+                for ( int c = 0; c < COL_NB-3; ++c) {
+                        if ( board[r][c] && board[r][c] == board[r-1][c+1]
+                                 && board[r][c] == board[r-2][c+2] 
+                             && board[r][c] == board[r-3][c+3])
+                                return 1;
+                }
+        }
+        return 0;
         
 }
+
