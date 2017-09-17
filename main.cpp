@@ -1,13 +1,12 @@
 #include "score4.h"
 #include <iostream>
+
 int main()
 {
-        Score4 a;
-        
-        while(1)
-        {
-                int c;
-                std::cin >> c;
-                a.play(c);
-        }
+        BitScoreFour a;
+        a.print();
+        char c;
+        while( std::cin >> c )
+                if ( c >= 'a' && c <= 'z' )
+                        a.play((File)(c - 'a'));
 }

@@ -1,92 +1,146 @@
 #include "score4.h"
 #include <iostream>
 #include <cassert>
-Score4::Score4()
-{
-        for ( int r = 0; r < ROW_NB; ++r )
-                for ( int c = 0; c < COL_NB; ++c )
-                        board[r][c] = EMPTY;
-        for ( int c = 0; c < COL_NB; ++c)
-                board[ROW_NB][c] = 3;
 
-        moveCount = 0;
-        turn = R_TURN;
+
+BitScoreFour::BitScoreFour()
+{
+        POS[WHITE] = 0;
+        POS[BLACK] = 0;
+        color      = WHITE;
+}
+
+void BitScoreFour::play(File file)
+{
+        Bitboard pieces = all_pieces();
+
+        //add element
+        int rank;
+        for (rank = ONE; rank != RANK_NB; ++rank){
+                Bitboard square = _FILE[file] & _RANK[rank];
+                if ( !(pieces & square) ){
+                        POS[color] |= square;
+                        break;
+                }
+        }
+        assert( rank != RANK_NB );
+
+        //check if game_over
+        game_over(file, (Rank)rank);
+
+        //swap color
+        color = color ? BLACK : WHITE;
         print();
+                
 }
 
-void Score4::print()
+Bitboard BitScoreFour::all_pieces()
 {
-        for ( int r = 0; r < ROW_NB; ++r )
-                for ( int c = 0; c < COL_NB; ++c )
-                        std::cout << (int)board[r][c] 
-                                  << " \n"[!(c+1-COL_NB)];
+        return POS[WHITE] | POS[BLACK];
 }
 
-void Score4::play( small move )
-{
-        assert( move < COL_NB && move >= 0 && !board[0][move] );
+void BitScoreFour::print()
+{        
+        Bitboard pieces = all_pieces();
 
-        small *piece = &board[0][move];
-        while( !*(piece+COL_NB) )
-                piece += COL_NB;
+        std::cout << ( color ? "WHITE TO MOVE\n":"BLACK TO MOVE\n");
+
+        for (int r = 6; r >= 0; --r){
+        std::cout << r+1 << " ";
+
+                for (int f = 0; f < 8; ++f){
+                        Bitboard square = _FILE[f] & _RANK[r];
+                        if ( pieces & square )
+                                std::cout << "xo"
+                                        [(bool)(POS[WHITE] & square)]
+                                          << " ";
+                        else
+                                std::cout << "_ ";
+                }                 
+                std::cout << "\n";
+        }
+        std::cout << "  A B C D E F G H\n\n";
+}
+
+void BitScoreFour::game_over(File file, Rank rank)
+{
+        if ( !~all_pieces() ){
+                std::cout << "DRAW!" << std::endl;
+                exit(0);
+        }
+
+        //rows
+        int winCount(0);
+        for (int f = file+1; f != FILE_NB; ++f)
+                if ( POS[color] & _FILE[f] & _RANK[rank] )
+                        winCount++;
+                else
+                        break;
+                 
+        for (int f = file-1; f >= A; --f)
+                if ( POS[color] & _FILE[f] & _RANK[rank] )
+                        winCount++;
+                else
+                        break;
+       
+        if ( winCount >= 3 )
+                std::cout << (color?"WHITE":"BLACK") << " WON!\n";
+
+        //columns
+        winCount = 0;
+        for (int r = rank+1; r != RANK_NB; ++r)
+                if ( POS[color] & _FILE[file] & _RANK[r] )
+                        winCount++;
+                else
+                        break;
         
-        *piece = turn ? RED : BLACK;
-        print();
-        game_over();
-        turn = turn ? B_TURN : R_TURN;
+        for (int r = rank-1; r >= ONE; --r)
+                if ( POS[color] & _FILE[file] & _RANK[r] )
+                        winCount++;
+                else
+                        break;
+        
+        if ( winCount >= 3 ){
+                std::cout << (color?"WHITE":"BLACK") << " WON!\n";
+                exit(0);
+        }
+        
+        // \ diagonals
+        winCount = 0;
 
-        moveCount ++ ;
+        for (int f = file+1, r = rank-1; f < FILE_NB && r >= ONE; ++f,--r)
+                if ( POS[color] & _FILE[f] & _RANK[r] )
+                        winCount++;
+                else
+                        break;        
 
-}
+        for (int f = file-1, r = rank+1;f >= A && r < RANK_NB ;--f,++r)
+                if ( POS[color] & _FILE[f] & _RANK[r] )
+                        winCount++;
+                else
+                        break;
+        
+        if ( winCount >= 3 ){
+                std::cout << (color?"WHITE":"BLACK") << " WON!\n";
+                exit(0);
+        }
 
-void Score4::game_over()
-{
-        if ( moveCount == SQ_NB ) 
-                std::cout << "DRAW" << std::endl;
-        else if ( wins() ){
-                std::cout << (turn == R_TURN ?"RED WINS\n":"BLACK WINS\n"); 
+        // / diagonals 
+        winCount = 0;
+        for (int f = file+1, r = rank+1; f < FILE_NB && r < RANK_NB; ++f,++r)
+                if ( POS[color] & _FILE[f] & _RANK[r] )
+                        winCount++;
+                else
+                        break;        
+        
+        for (int f = file-1, r = rank-1;f >= A && r >= ONE; --f,--r)
+                if ( POS[color] & _FILE[f] & _RANK[r] )
+                        winCount++;
+                else
+                        break;        
+        
+        if ( winCount >= 3 ){
+                std::cout << (color?"WHITE":"BLACK") << " WON!\n";
                 exit(0);
         }
 }
-
-bool Score4::wins(){
-        for ( int r = 0; r < ROW_NB; ++r) {
-                for ( int c = 0; c < 5; ++c) {
-                        if ( board[r][c] && board[r][c] == board[r][c+1]
-                                 && board[r][c] == board[r][c+2] 
-                             && board[r][c] == board[r][c+3])
-                                return 1;
-                }
-        }
-
-        for ( int c = 0; c < COL_NB; ++c) {
-                for ( int r = 0; r < 4; ++r) {
-                        if ( board[r][c] && board[r][c] == board[r+1][c]
-                                 && board[r][c] == board[r+2][c] 
-                             && board[r][c] == board[r+3][c])
-                                return 1;
-                }
-        }
-
-
-        for ( int r = 0; r < ROW_NB-3; ++r ) {
-                for ( int c = 0; c < COL_NB-3; ++c) {
-                        if ( board[r][c] && board[r][c] == board[r+1][c+1]
-                                 && board[r][c] == board[r+2][c+2] 
-                             && board[r][c] == board[r+3][c+3])
-                                return 1;
-                }
-        }
-
-        for ( int r = 3; r < ROW_NB; ++r ) {
-                for ( int c = 0; c < COL_NB-3; ++c) {
-                        if ( board[r][c] && board[r][c] == board[r-1][c+1]
-                                 && board[r][c] == board[r-2][c+2] 
-                             && board[r][c] == board[r-3][c+3])
-                                return 1;
-                }
-        }
-        return 0;
-        
-}
-

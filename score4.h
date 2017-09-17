@@ -1,32 +1,34 @@
 #include <cstdint>
-#define small int8_t
 
-const small ROW_NB = 6;
-const small COL_NB = 7;
-const small SQ_NB  = 42;
-enum Color : small{
-        EMPTY, RED, BLACK
-};
+typedef uint64_t Bitboard;
 
-enum Turn : int{
-        B_TURN, R_TURN
-};
+//FILE
+enum File { A, B, C, D, E, F, G, H, FILE_NB = 8 };
+const Bitboard _FILE[FILE_NB] = { 72340172838076673,   144680345676153346,
+             289360691352306692,  578721382704613384,  1157442765409226768,
+             2314885530818453536, 4629771061636907072, 9259542123273814144u};
 
-class Score4{
-        
+//RANK
+enum Rank { ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, RANK_NB = 7 };
+const Bitboard _RANK[RANK_NB] = { 255, 65280, 16711680, 4278190080, 1095216660480,
+                                  280375465082880, 71776119061217280};
+
+//DIAGONAL
+enum Diagonal { A4D1, A5E1, A6F1, A7G1, B7H1, C7H2, D7H3, E7H4 };
+//Color
+enum Color { WHITE = 1, BLACK = 0, COLOR_NB = 2};
+
+enum Direction { UP = FILE_NB, RIGHT = -1 };
+
+class BitScoreFour{
 public:
-
-        Score4();
-        void play(small move);
-        
-        
-public:
-        small board[ROW_NB+1][COL_NB];
-        small moveCount;
-        Turn  turn;
-        
-        void game_over();
+        BitScoreFour();
+        void play(File fileIdx);
         void print();
-        bool wins();
+        Bitboard all_pieces();
+        void game_over(File, Rank);
+        
+private:
+        Bitboard POS[COLOR_NB];
+        Color color;
 };
-
