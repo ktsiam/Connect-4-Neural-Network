@@ -123,7 +123,7 @@ void BitScoreFour::game_over(File file, Rank rank)
 
         // / diagonals 
         winCount = 0;
-        for (int f = file+1, r = rank+1; f < FILE_NB && r < RANK_NB; ++f,++r){
+        for (int f = file+1, r = rank+1; f < FILE_NB && r < RANK_NB; ++f,++r)
                 if ( POS[color] & _FILE[f] & _RANK[r] )
                         winCount++;
                 else
