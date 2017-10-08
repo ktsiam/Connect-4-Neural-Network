@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cassert>
 
-
+extern bool GAME_OVER;
 BitScoreFour::BitScoreFour()
 {
         POS[WHITE] = 0;
@@ -30,7 +30,7 @@ void BitScoreFour::play(File file)
 
         //swap color
         color = color ? BLACK : WHITE;
-        print();
+        print();        
                 
 }
 
@@ -66,7 +66,8 @@ void BitScoreFour::game_over(File file, Rank rank)
 {
         if ( !~all_pieces() ){
                 std::cout << "DRAW!" << std::endl;
-                exit(0);
+                GAME_OVER = -1;
+                return;
         }
 
         //rows
@@ -85,7 +86,8 @@ void BitScoreFour::game_over(File file, Rank rank)
        
         if ( winCount >= 3 ){
                 std::cout << (color?"WHITE":"BLACK") << " WON!\n";
-                exit(0);
+                GAME_OVER = color + 1;
+                return;
         }
 
         //columns
@@ -104,7 +106,8 @@ void BitScoreFour::game_over(File file, Rank rank)
         
         if ( winCount >= 3 ){
                 std::cout << (color?"WHITE":"BLACK") << " WON!\n";
-                exit(0);
+                GAME_OVER = color + 1;
+                return;
         }
         
         // \ diagonals
@@ -124,7 +127,8 @@ void BitScoreFour::game_over(File file, Rank rank)
         
         if ( winCount >= 3 ){
                 std::cout << (color?"WHITE":"BLACK") << " WON!\n";
-                exit(0);
+                GAME_OVER = color + 1;
+                return;
         }
 
         // / diagonals 
@@ -143,6 +147,7 @@ void BitScoreFour::game_over(File file, Rank rank)
         
         if ( winCount >= 3 ){
                 std::cout << (color?"WHITE":"BLACK") << " WON!\n";
-                exit(0);
+                GAME_OVER = color + 1;
+                return;
         }
 }

@@ -18,6 +18,9 @@ enum Color { WHITE = 1, BLACK = 0, COLOR_NB = 2};
 
 enum Direction { UP = FILE_NB, RIGHT = -1 };
 
+
+
+
 class BitScoreFour{
 public:
         BitScoreFour();
@@ -25,6 +28,7 @@ public:
         void print();
         Bitboard all_pieces();
         void game_over(File, Rank);
+        Bitboard get_pos(Color color) { return POS[color]; }
         
 private:
         Bitboard POS[COLOR_NB];
