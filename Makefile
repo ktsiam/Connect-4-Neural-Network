@@ -1,10 +1,18 @@
 CXX      = clang++
-LDFLAGS  = -Wall -Wextra -std=c++11 -O3
+CXXFLAGS = -std=c++11 #-Weverything #-O3
+LDFLAGS  = -Wall -Wextra 
 
-play: score4.o score4.h main.cpp 
-	${CXX} ${LDFLAGS} -o	play	score4.cpp main.cpp
 
+play: ./objects/score4.o ./objects/main.o 
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -o	play	./objects/score4.o ./objects/main.o
+
+
+./objects/score4.o: ./score4/score4.cpp
+	${CXX} ${CXXFLAGS} -c -o ./objects/score4.o ./score4/score4.cpp
+
+./objects/main.o: main.cpp
+	${CXX} ${CXXFLAGS} -c -o ./objects/main.o ./main.cpp
 clean:
 	rm -f play
-	rm -f *o
+	rm -f ./objects/*
 	rm -rf *.dSYM

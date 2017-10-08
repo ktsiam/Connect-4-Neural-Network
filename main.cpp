@@ -1,4 +1,4 @@
-#include "score4.h"
+#include "score4/score4.h"
 #include <iostream>
 
 struct Player{
