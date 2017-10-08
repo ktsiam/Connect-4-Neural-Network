@@ -13,8 +13,6 @@ enum Rank { ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, RANK_NB = 7 };
 const Bitboard _RANK[RANK_NB] = { 255, 65280, 16711680, 4278190080, 1095216660480,
                                   280375465082880, 71776119061217280};
 
-//DIAGONAL
-enum Diagonal { A4D1, A5E1, A6F1, A7G1, B7H1, C7H2, D7H3, E7H4 };
 //Color
 enum Color { WHITE = 1, BLACK = 0, COLOR_NB = 2};
 

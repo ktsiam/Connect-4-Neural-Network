@@ -23,7 +23,7 @@ void BitScoreFour::play(File file)
                         break;
                 }
         }
-        assert( rank != RANK_NB );
+        if ( rank == RANK_NB ) return;
 
         //check if game_over
         game_over(file, (Rank)rank);
@@ -59,7 +59,7 @@ void BitScoreFour::print()
                 }                 
                 std::cout << "\n";
         }
-        std::cout << "  A B C D E F G H\n\n";
+        std::cout << "  A B C D E F G H\n";
 }
 
 void BitScoreFour::game_over(File file, Rank rank)
@@ -83,8 +83,10 @@ void BitScoreFour::game_over(File file, Rank rank)
                 else
                         break;
        
-        if ( winCount >= 3 )
+        if ( winCount >= 3 ){
                 std::cout << (color?"WHITE":"BLACK") << " WON!\n";
+                exit(0);
+        }
 
         //columns
         winCount = 0;

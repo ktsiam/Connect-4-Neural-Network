@@ -7,6 +7,6 @@ int main()
         a.print();
         char c;
         while( std::cin >> c )
-                if ( c >= 'a' && c <= 'z' )
+                if ( c >= 'a' && c <= 'h' )
                         a.play((File)(c - 'a'));
 }
