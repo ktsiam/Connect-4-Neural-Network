@@ -1,6 +1,6 @@
 CXX      = clang++
-CXXFLAGS = -std=c++11 #-Weverything #-O3
-LDFLAGS  = -Wall -Wextra 
+CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic #-Weverything #-O3
+LDFLAGS  = 
 
 
 play: score4.o main.o 
