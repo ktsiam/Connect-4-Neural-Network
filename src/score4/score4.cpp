@@ -10,7 +10,7 @@ BitScoreFour::BitScoreFour()
         color      = WHITE;
 }
 
-void BitScoreFour::play(File file)
+bool BitScoreFour::play(File file)
 {
         Bitboard pieces = all_pieces();
 
@@ -23,7 +23,7 @@ void BitScoreFour::play(File file)
                         break;
                 }
         }
-        if ( rank == RANK_NB ) return;
+        if ( rank == RANK_NB ) return false;
 
         //check if game_over
         game_over(file, (Rank)rank);
@@ -32,6 +32,7 @@ void BitScoreFour::play(File file)
         color = color ? BLACK : WHITE;
         print();        
                 
+        return true;
 }
 
 Bitboard BitScoreFour::all_pieces()

@@ -23,7 +23,7 @@ enum Direction { UP = FILE_NB, RIGHT = -1 };
 class BitScoreFour{
 public:
         BitScoreFour();
-        void play(File fileIdx);
+        bool play(File fileIdx);
         void print();
         Bitboard all_pieces();
         void game_over(File, Rank);
