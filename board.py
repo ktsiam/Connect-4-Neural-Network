@@ -8,12 +8,6 @@ BC = 'x'
 ROWS = [127, 16256, 2080768, 266338304, 34091302912, 4363686772736]
 COLS = [34630287489, 69260574978, 138521149956, 277042299912, 554084599824, 1108169199648, 2216338399296]
 
-class Col(Enum):
-    ONE = 1
-    TWO = 2
-    THREE = 3
-
-
 class Board:
     def __init__(self):
         self.position = [0, 0]
@@ -21,11 +15,11 @@ class Board:
 
     def play(self, col):
         taken = self.all_pieces() & COLS[col]
-        for index, r in enumerate(ROWS):
+        for row, r in enumerate(ROWS):
             if not(taken & r):
                 self.position[self.color] |= r & COLS[col]
                 self.print_board()
-                is_game_over(index, col)
+                self.is_game_over(row, col)
                 self.color ^= True
                 return True
         return False
@@ -48,9 +42,48 @@ class Board:
             print(s)
         print("  A B C D E F G\n")
 
-    def is_game_over(self, row, col)
+    def is_game_over(self, row, col) :
+        pieces = self.position[self.color]
 
+        full_col = COLS[col]
+        full_row = ROWS[row]
+        win_count = 0;
+        
+        for r in ROWS :
+            win_count = win_count+1 if r & full_col & pieces else 0
+            if win_count > 3 : print("PLAYER WON | ")
+
+        for c in COLS :
+            win_count = win_count+1 if c & full_row & pieces else 0
+            if win_count > 3 : print("PLAYER WON - ")
+
+        #/
+        if row >= col :
+               for idx, r in enumerate(ROWS[row-col:]) :
+                   win_count = win_count+1 if r & COLS[idx] & pieces else 0
+                   if win_count > 3 : print("PLAYER WON /+ ")
+                   
+        else :
+            for idx, c in enumerate(COLS[col-row:]) :
+                win_count = win_count+1 if c & ROWS[idx] & pieces else 0
+                if win_count > 3 : print("PLAYER WON /- ")
+    
+        #NOT WORKING
+        col_max = len(COLS)-1
+        if row >= col_max-col :
+            for idx, r in enumerate(ROWS[row-(col_max-col): ]) :
+                win_count = win_count+1 if r & COLS[col_max-idx] & pieces else 0
+                if win_count > 3 : print("PLAYER WON \+ ")
+
+        else :
+            for idx, c in enumerate(COLS[col+row: 0]) :
+                win_count = win_count+1 if c & ROWS[idx] & pieces else 0
+                if win_count > 3 : print("PLAYER WON \- ")
+    
+        #ALSO ADD DRAW
+                
 
 b = Board()
-b.print_board() 
-b.play(0)
+
+while 1 :    
+    b.play(ord(input())-ord('a'))
