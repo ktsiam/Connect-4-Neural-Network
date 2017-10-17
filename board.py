@@ -1,3 +1,4 @@
+from Brain import Brain
 from enum import Enum
 
 WHITE = 0
@@ -103,8 +104,10 @@ class Board:
                 
 
 b = Board()
+brain = Brain()
 
 while 1 :
+    """ if people are playing
     inp = ord(input())-ord('a')
     if inp > 6:
         print('invalid input')
@@ -118,3 +121,6 @@ while 1 :
             print('WHITE wins!')
         elif res == 11:
             print('BLACK wins')
+        """
+    """ if robots are playing """
+    res = b.play(brain.make_move(b, b.color))
