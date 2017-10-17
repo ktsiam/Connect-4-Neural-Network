@@ -20,10 +20,14 @@ class Board:
             if not(taken & r):
                 self.position[self.color] |= r & COLS[col]
                 self.print_board()
-                self.is_game_over(row, col)
+                if self.is_game_over(row, col):
+                    self.position = [0, 0]
+                    winner = self.color
+                    self.color = WHITE
+                    return winner + 10
                 self.color ^= True
-                return True
-        return False
+                return 0
+        return -1
 
     def all_pieces(self):
         return self.position[WHITE] | self.position[BLACK]
@@ -52,35 +56,47 @@ class Board:
         win_count = 0;        
         for r in ROWS :
             win_count = win_count+1 if r & full_col & pieces else 0
-            if win_count > 3 : print("PLAYER WON | ")
+            if win_count > 3 : 
+                print("PLAYER WON | ")
+                return True
 
         win_count = 0
         for c in COLS :
             win_count = win_count+1 if c & full_row & pieces else 0
-            if win_count > 3 : print("PLAYER WON - ")
+            if win_count > 3 : 
+                print("PLAYER WON - ")
+                return True
     
         win_count = 0
         if row >= col :
             for idx, r in enumerate(ROWS[row-col:]) :
                 win_count = win_count+1 if r & COLS[idx] & pieces else 0
-                if win_count > 3 : print("PLAYER WON /+ ")
+                if win_count > 3 : 
+                    print("PLAYER WON /+ ")
+                    return True
                 
         else :
             for idx, c in enumerate(COLS[col-row:]) :
                 win_count = win_count+1 if c & ROWS[idx] & pieces else 0
-                if win_count > 3 : print("PLAYER WON /- ")
+                if win_count > 3 : 
+                    print("PLAYER WON /- ")
+                    return True
     
         win_count = 0
         col_max = len(COLS)-1
         if row >= col_max-col :
             for idx, r in enumerate(ROWS[row-(col_max-col): ]) :
                 win_count = win_count+1 if r & COLS[col_max-idx] & pieces else 0
-                if win_count > 3 : print("PLAYER WON \+ ")
+                if win_count > 3 : 
+                    print("PLAYER WON \+ ")
+                    return True
 
         else :
             for idx, r in enumerate(ROWS[0:row+col+1]) :
                 win_count = win_count+1 if r & COLS[col+row-idx] & pieces else 0
-                if win_count > 3 : print("PLAYER WON \- ")
+                if win_count > 3 :
+                    print("PLAYER WON \- ")
+                    return True
     
         if self.all_pieces() == FULL :
             print("DRAW")
@@ -88,5 +104,17 @@ class Board:
 
 b = Board()
 
-while 1 :    
-    b.play(ord(input())-ord('a'))
+while 1 :
+    inp = ord(input())-ord('a')
+    if inp > 6:
+        print('invalid input')
+    elif inp < 0:
+        break
+    else:
+        res = b.play(inp)
+        if res == -1:
+            print('invalid move')
+        elif res == 10:
+            print('WHITE wins!')
+        elif res == 11:
+            print('BLACK wins')
