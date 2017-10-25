@@ -13,27 +13,32 @@ FULL = 0x3FFFFFFFFFF
 class Board:
     def __init__(self):
         self.position = [0, 0]
-        self.color = WHITE    
-
-    #returns flag (0 for none, 1 for win, 2 for draw, 4 for invalid) 
-    def play(self, col, debug):
-        position, flag = self.tryMove(self.position, self.color, col, debug)
+        self.color = WHITE
+    #returns flag (0 for none, 1 for win, 2 for draw, 4 for invalid)
+    def play(self, col, debug=False):
+        position, flag = self.tryMove(col, debug)
         if (flag == 1 or flag == 2):
             self.position = [0, 0]
             self.color = WHITE
         if (flag == 0):
             self.color = not self.color
+            self.position = position
         return flag;
 
     #returns position, flag (0 for none, 1 for win, 2 for draw, 4 for invalid)
-    def tryMove(self, pos, clr, col, debug):
+    def tryMove(self, col, debug=False, pos=-5, clr=-5):
+        if pos == -5 :
+            pos= self.position.copy()
+        if clr == -5:
+            clr = self.color
+
         taken = self.all_pieces(pos) & COLS[col]
         for row, r in enumerate(ROWS):
             if not (taken & r):
                 pos[clr] |= r & COLS[col]
                 game_over = self.is_game_over(row, col, pos, clr, debug)
                 return pos, game_over
-        return pos, 4                                        
+        return pos, 4
 
     def all_pieces(self, pos):
         return pos[WHITE] | pos[BLACK]
@@ -61,10 +66,10 @@ class Board:
         full_col = COLS[col]
         full_row = ROWS[row]
 
-        win_count = 0;        
+        win_count = 0;
         for r in ROWS :
             win_count = win_count+1 if r & full_col & pieces else 0
-            if win_count > 3 : 
+            if win_count > 3 :
                 if debug:
                     print("PLAYER WON | ")
                 return 1
@@ -72,34 +77,34 @@ class Board:
         win_count = 0
         for c in COLS :
             win_count = win_count+1 if c & full_row & pieces else 0
-            if win_count > 3 : 
+            if win_count > 3 :
                 if debug:
                     print("PLAYER WON - ")
                 return 1
-    
+
         win_count = 0
         if row >= col :
             for idx, r in enumerate(ROWS[row-col:]) :
                 win_count = win_count+1 if r & COLS[idx] & pieces else 0
-                if win_count > 3 : 
+                if win_count > 3 :
                     if debug:
                         print("PLAYER WON /+ ")
                     return True
-                
+
         else :
             for idx, c in enumerate(COLS[col-row:]) :
                 win_count = win_count+1 if c & ROWS[idx] & pieces else 0
-                if win_count > 3 : 
+                if win_count > 3 :
                     if debug:
                         print("PLAYER WON /- ")
                     return 1
-    
+
         win_count = 0
         col_max = len(COLS)-1
         if row >= col_max-col :
             for idx, r in enumerate(ROWS[row-(col_max-col): ]) :
                 win_count = win_count+1 if r & COLS[col_max-idx] & pieces else 0
-                if win_count > 3 : 
+                if win_count > 3 :
                     if debug:
                         print("PLAYER WON \+ ")
                     return 1
@@ -111,31 +116,34 @@ class Board:
                     if debug:
                         print("PLAYER WON \- ")
                     return 1
-    
+
         if self.all_pieces(self.position) == FULL :
             if debug:
                 print("DRAW")
             return 2;
         return 0;
 
-b = Board()
 #brain = Brain()
 
-while 1 :
-    # if people are playing
-    inp = ord(input())-ord('a')
-    if inp > 6:
-        print('invalid input')
-    elif inp < 0:
-        break
-    else:
-        res = b.play(inp, True)
-        if res == 4:
-            print('invalid move')
-        elif res == 1:
-            print('WHITE' if (b.color == WHITE) else 'BLACK', 'WINS!')
-        elif res == 2:
-            print('DRAW')
-        
-    # if robots are playing """
-    #res = b.play(brain.make_move(b, b.color))
+if __name__ == "__main__":
+    b = Board()
+
+
+    while 1 :
+        # if people are playing
+        inp = ord(input())-ord('a')
+        if inp > 6:
+            print('invalid input')
+        elif inp < 0:
+            break
+        else:
+            res = b.play(inp, True)
+            if res == 4:
+                print('invalid move')
+            elif res == 1:
+                print('WHITE' if (b.color == WHITE) else 'BLACK', 'WINS!')
+            elif res == 2:
+                print('DRAW')
+
+        # if robots are playing """
+        #res = b.play(brain.make_move(b, b.color))
