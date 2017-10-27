@@ -3,6 +3,7 @@ import random
 import pickle
 import sys
 import numpy as np
+import time
 
 # table = {}
 NUM_COLS = 7
@@ -24,6 +25,7 @@ class Table_ai:
         while(1):
             b.play(greedyMove(b, self.table, True), True)
             b.play(int(input()), True)
+            time.sleep(1)
         
 
     def updateState(self, pos_stack, flag, table):
