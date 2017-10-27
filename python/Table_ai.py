@@ -19,35 +19,18 @@ class Table_ai:
         else:
             self.table = {}
 
-    def train(self, readFile=False, saveFile="table.txt"):
-
-        if readFile:
-            with open(readFile, "rb") as fp:
-                table = pickle.load(fp)
-        else:
-            table = self.table
-
-        Run(1000, 0.1)
-        Run(1000, 0.08)
-        Run(1000, 0.05)
-        Run(50000, 0.02)
-        Run(1000, 0.07)
-        Run(100000, 0.01)
-        print('done')
-
-        if saveFile:
-            with open(saveFile, "wb") as fp:
-                pickle.dump(table, fp)
-
-        return table
+    def playHuman(self):
+        b = Board()
+        while(1):
+            b.play(greedyMove(b, self.table, True), True)
+            b.play(int(input()), True)
+        
 
     def updateState(self, pos_stack, flag, table):
         br = Board()
         if flag == 2:
             print('draw')
         # print("new_game")
-        # print()
-        # print()
         # print(len(pos_stack))
         for i in range(len(pos_stack)):
 
@@ -65,7 +48,7 @@ class Table_ai:
             # br.print_board(pos, 1)
         # return table
 
-    def Run(self, ITER=1, rand=0.01, debug=False, table=False, saveFile="table.txt"):
+    def Run(self, ITER=1, rand=0.01, debug=False, saveFile="table.txt"):
         b = Board()
         # if table == False:
         #     table = self.table
@@ -84,7 +67,7 @@ class Table_ai:
                 if random.random() < rand:
                     flag = 4
                     cnt = 0
-                    while (flag == 4 and cnt < 20):
+                    while (flag == 4 and cnt < 200):
                         best_move = np.random.randint(0, NUM_COLS)
                         next_pos, flag = b.tryMove( best_move )
                         cnt += 1
@@ -107,11 +90,12 @@ class Table_ai:
             self.updateState(pos_stack, flag, self.table)
         if saveFile:
             with open(saveFile, "wb") as fp:
-                pickle.dump(table, fp)
-        return table
+                pickle.dump(self.table, fp)
+        return self.table
 
 
-def greedyMove( b, table, debug):
+
+def greedyMove( b, table, debug=False):
     best_move = -1
     best_prob = 0.0
 
@@ -126,7 +110,7 @@ def greedyMove( b, table, debug):
             prob = values["wins"] / float(values["seen"])
 
 
-            prob += random.gauss(0, 0.01 )
+            prob += random.gauss(0, 0.001 )
 
             if debug:
                 print(col, round(prob, 4), values)
@@ -145,3 +129,6 @@ def greedyMove( b, table, debug):
 
 
 ##
+if __name__ == "__main__":
+    t = Table_ai("table.txt")
+    t.playHuman()

@@ -1,5 +1,6 @@
 from Brain import Brain
 from enum import Enum
+import numpy
 
 WHITE = 0
 BLACK = 1
@@ -123,7 +124,6 @@ class Board:
                 print("DRAW")
             return 2;
         return 0;
-
 #brain = Brain()
 
 if __name__ == "__main__":
