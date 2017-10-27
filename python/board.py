@@ -17,13 +17,14 @@ class Board:
     #returns flag (0 for none, 1 for win, 2 for draw, 4 for invalid)
     def play(self, col, debug=False):
         position, flag = self.tryMove(col, debug)
+
         if (flag == 1 or flag == 2):
             self.position = [0, 0]
             self.color = WHITE
         if (flag == 0):
             self.color = not self.color
             self.position = position
-        return flag;
+        return flag, position;
 
     #returns position, flag (0 for none, 1 for win, 2 for draw, 4 for invalid)
     def tryMove(self, col, debug=False, pos=-5, clr=-5):

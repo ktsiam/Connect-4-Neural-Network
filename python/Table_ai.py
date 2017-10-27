@@ -8,7 +8,7 @@ import numpy as np
 NUM_COLS = 7
 NUM_ROWS = 6
 NUM_ITERATIONS = 30
-DEFAULT_STATE = {'wins': 15, 'seen': 20}
+DEFAULT_STATE = {'wins': 12, 'seen': 20}
 WIN_STATE = {'wins': 10, 'seen': 10}
 
 class Table_ai:
@@ -42,8 +42,13 @@ class Table_ai:
         return table
 
     def updateState(self, pos_stack, flag, table):
+        br = Board()
         if flag == 2:
             print('draw')
+        # print("new_game")
+        # print()
+        # print()
+        # print(len(pos_stack))
         for i in range(len(pos_stack)):
 
 
@@ -51,12 +56,16 @@ class Table_ai:
             if pos not in self.table:
                 self.table[pos] = DEFAULT_STATE.copy()
 
+            # print(self.table[pos])
             ## add 1 to wins for player who had last state
             self.table[pos]["wins"] += i & 1 ^ 1
             self.table[pos]["seen"] += 1
+
+            # print(self.table[pos])
+            # br.print_board(pos, 1)
         # return table
 
-    def Run(self, ITER=1, rand=0.01, debug=False, table=False):
+    def Run(self, ITER=1, rand=0.01, debug=False, table=False, saveFile="table.txt"):
         b = Board()
         # if table == False:
         #     table = self.table
@@ -66,6 +75,7 @@ class Table_ai:
             # print(i, end=" ")
             # print(i)
 
+            # play one game
             pos_stack = []
             while(1 ):
                 # print("p", end=" ")
@@ -86,13 +96,18 @@ class Table_ai:
                     best_move = greedyMove(b, self.table, debug)
 
                 ## play chosen move
-                flag = b.play(best_move, debug)
+                flag, pos = b.play(best_move, debug)
+
+                pos_stack.append( tuple(pos) )
+                # game over
                 if flag != 0:
                     # win_clr = curr_clr
                     break
 
-                pos_stack.append( tuple(b.position) )
             self.updateState(pos_stack, flag, self.table)
+        if saveFile:
+            with open(saveFile, "wb") as fp:
+                pickle.dump(table, fp)
         return table
 
 
@@ -111,7 +126,7 @@ def greedyMove( b, table, debug):
             prob = values["wins"] / float(values["seen"])
 
 
-            prob += random.gauss(0, 0.02 )
+            prob += random.gauss(0, 0.01 )
 
             if debug:
                 print(col, round(prob, 4), values)
